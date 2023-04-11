@@ -48,7 +48,7 @@ def token_required(func):
 
     return decorated
 
-#To register end users with username,password and email
+#To Register End users with Username, Password and Email-Id
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     msg = ''
@@ -78,7 +78,7 @@ def register():
     elif request.method == 'POST':
         return abort(400, {'message': 'Please fill out the form !'})
 
-
+#To Login Users with Username and Password
 @app.route('/')
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -91,7 +91,7 @@ def login():
         user = cur.fetchone()
         if user:
             session['loggedin'] = True
-            token = jwt.encode({
+            token = jwt.encode({          #We are creating JWT for Login
                 'username': username,
                 'expiration': str(datetime.utcnow() + timedelta(minutes=10))
             }, app.config['SECRET_KEY'])
@@ -102,7 +102,7 @@ def login():
             msg = 'Incorrect username / password !'
             return make_response({'message': msg}, 403, {'WWW-Authenticate': 'Basic realm: "Authentication Failed"'})
 
-
+#To Book an appointment with doctor using personal end user details
 @app.route('/book_appointment', methods=['GET', 'POST'])
 @token_required
 def book_appointment():
@@ -124,7 +124,7 @@ def book_appointment():
     else:
         return make_response('Invalid request parameters', 400)
 
-
+#To upload file which has limited size capacity, particular file extensions and proper upload file location.
 @app.route('/upload', methods=['POST'])
 @token_required
 def upload():
@@ -143,6 +143,6 @@ def upload():
 def public():
     return make_response('No Login Required!!!', 200)
 
-
+#To request APTs in 5000 port number in local host 
 if __name__ == "__main__":
     app.run(host="localhost", port=int("5000"))
