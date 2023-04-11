@@ -36,3 +36,4 @@ CREATE TABLE IF NOT EXISTS `appointments` (
 ) ENGINE=InnODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 7. Update the code and modify app.py with the correct username and password for the database installed on your machine.
+8. Change the upload path in app.py based on the PATH you have on your computer to make use of upload API.
