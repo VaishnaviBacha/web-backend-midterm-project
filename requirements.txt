@@ -1,0 +1,37 @@
+
+1. Go to the project folder.
+2. Setup Virtual Env using command: virtualenv -p python3 venv
+3. Activate the env using command: source venv/bin/activate
+4. Install the following packages:
+    1. pip install -U flask-cors
+    2. pip install flask-mysqldb
+    3. pip install cryptography
+    4. pip install DateTime
+    5. Pip install flask
+5. In Mysql create separate database named project_db
+6. Create 2 schemas named users and appointments:
+
+CREATE TABLE IF NOT EXISTS `users` (
+`id` int NOT NULL AUTO_INCREMENT,
+`username` varchar(50) NOT NULL,
+`password` varchar(255) NOT NULL,
+`email` varchar(100) NOT NULL,
+ PRIMARY KEY (`id`)
+) ENGINE=InnODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE IF NOT EXISTS `appointments` (
+`id` int NOT NULL AUTO_INCREMENT,
+`fullName` varchar(50) NOT NULL,
+`phoneNumber` varchar(255) NOT NULL,
+`email` varchar(100) NOT NULL,
+`date` varchar(20) NOT NULL,
+`time` varchar(10) NOT NULL,
+`area` varchar(20) NOT NULL,
+`city` varchar(20) NOT NULL,
+`state` varchar(20) NOT NULL,
+`postalcode` varchar(20) NOT NULL,
+ PRIMARY KEY (`id`)
+) ENGINE=InnODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+7. Update the code and modify app.py with the correct username and password for the database installed on your machine.
