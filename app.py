@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, session, abort, make_response, jsonify
 import pymysql
+from werkzeug.utils import secure_filename
+import os
 from flask_cors import CORS
 import re
 import jwt
@@ -11,10 +13,11 @@ app = Flask(__name__)
 # CORS(app)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
-app.secret_key = 'happykey'
-app.permanent_session_lifetime = timedelta(minutes=10)
-
+upload_folder = '/Users/akshaymarewar/Documents/CSUF/SEM 3/web-backend/project/MidTermProject/upload_folder'
 app.config["SECRET_KEY"] = 'af8d0c819f19479bb50f8e28c4b17f2c';
+app.config['UPLOAD_PATH'] = upload_folder
+app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
+app.config['UPLOAD_EXTENSIONS'] = {'.jpeg', '.pdf', '.png'}
 
 # To connect MySQL database
 conn = pymysql.connect(
@@ -33,14 +36,15 @@ def token_required(func):
         token = None
         if "Authorization" in request.headers:
             data = request.headers["Authorization"]
-            token = str.replace(str(data), "Bearer ", "")       # Extracting token
+            token = str.replace(str(data), "Bearer ", "")  # Extracting token
         if not token:
-            return make_response(jsonify({'Alert!': 'token is missing', 'statusCode': 401}), 401)   # HTTP Status code 401 unauthorized
+            return make_response(jsonify({'Alert!': 'token is missing', 'statusCode': 401}),
+                                 401)  # HTTP Status code 401 unauthorized
         try:
-            payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])     # decoding payload from token
+            payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])  # decoding payload from token
         except:
             return make_response(jsonify({'Alert!': 'Token is invalid', 'statusCode': 401}), 401)
-        return func(payload.get('username'), *args, **kwargs)
+        return func(*args, **kwargs)
 
     return decorated
 
@@ -101,7 +105,7 @@ def login():
 
 @app.route('/book_appointment', methods=['GET', 'POST'])
 @token_required
-def book_appointment(username):
+def book_appointment():
     if request.method == 'POST' and 'fullName' in request.form and 'phoneNumber' in request.form and 'email' in request.form and 'state' in request.form and 'city' in request.form and 'area' in request.form and 'postalcode' in request.form and 'date' in request.form and 'time' in request.form:
         fullname = request.form['fullName']
         phonenumber = request.form['phoneNumber']
@@ -119,6 +123,20 @@ def book_appointment(username):
         return make_response('Appointment Booked', 201)
     else:
         return make_response('Invalid request parameters', 400)
+
+
+@app.route('/upload', methods=['POST'])
+@token_required
+def upload():
+    if request.method == 'POST':
+        uploaded_file = request.files['file']
+        filename = secure_filename(uploaded_file.filename)
+        if filename != '':
+            file_ext = os.path.splitext(filename)[1]
+        if file_ext not in app.config['UPLOAD_EXTENSIONS']:
+            abort(400, {'message': 'Unsupported file extension !'})
+        uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+        return make_response('Upload Successful', 200)
 
 
 @app.route('/public', methods=['GET'])
