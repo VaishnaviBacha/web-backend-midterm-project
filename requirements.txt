@@ -10,7 +10,7 @@
     5. Pip install flask
     6. Pip install pyjwt
 5. In Mysql create separate database named project_db
-6. Create 2 schemas named users and appointments:
+6. Create 2 schemas named users and appointments
 
 CREATE TABLE IF NOT EXISTS `users` (
 `id` int NOT NULL AUTO_INCREMENT,
