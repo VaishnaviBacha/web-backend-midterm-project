@@ -9,4 +9,4 @@
 ## Team Members
 - Vaishnavi Bacha
 - Vallari Rajkumar
-- Lency
+- Lency Lakhani
