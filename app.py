@@ -48,7 +48,7 @@ def token_required(func):
 
     return decorated
 
-
+#To register end users with username,password and email
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     msg = ''
