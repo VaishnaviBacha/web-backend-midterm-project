@@ -91,7 +91,7 @@ def login():
         user = cur.fetchone()
         if user:
             session['loggedin'] = True
-            token = jwt.encode({          #Verify JWT tokens for Login
+            token = jwt.encode({          #We are creating JWT for Login
                 'username': username,
                 'expiration': str(datetime.utcnow() + timedelta(minutes=10))
             }, app.config['SECRET_KEY'])
